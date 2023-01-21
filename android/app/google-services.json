@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1097578083117",
+    "project_id": "flutter-form-adde2",
+    "storage_bucket": "flutter-form-adde2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097578083117:android:ce7adf1df2ed7556bdd9a4",
+        "android_client_info": {
+          "package_name": "com.example.flutter_form"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097578083117-h8vsqrjr1l90227hsqhofmngbv31ggkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYAaT33eFkAMMlnsp_iX3JaRiHpoU89c0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097578083117-h8vsqrjr1l90227hsqhofmngbv31ggkn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
