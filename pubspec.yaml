@@ -39,6 +39,7 @@ dependencies:
   csc_picker: ^0.2.6
   snippet_coder_utils: ^1.0.12
   cloud_firestore: ^4.3.1
+  dropdownfield: ^1.0.3
 
 dev_dependencies:
   flutter_test:

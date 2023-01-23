@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_form/users_page.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,8 +51,8 @@ class _HomePageState extends State<HomePage> {
       action = 'update';
       _nameController.text = documentSnapshot['name'];
       _idController.text = documentSnapshot['id'].toString();
-      city = documentSnapshot['city'];
-      village = documentSnapshot['village'];
+      _cityController.text = documentSnapshot['city'];
+      _villageController.text = documentSnapshot['village'];
     }
 
     await showModalBottomSheet(
@@ -183,8 +184,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users Form'),
-      ),
+          title: const Text('Users Form'),
+          leading: IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ViewAll()));
+            },
+          )),
       // Using StreamBuilder to display all users from Firestore in real-time
       body: StreamBuilder(
         stream: _userss.snapshots(),
