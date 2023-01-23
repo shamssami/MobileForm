@@ -32,7 +32,7 @@ class _EditPage extends State<EditPage> {
     _employee_position.value =
         TextEditingValue(text: widget.employee!.position.toString());
     _employee_contact.value =
-        TextEditingValue(text: widget.employee!.contactno.toString());
+        TextEditingValue(text: widget.employee!.id_no.toString());
   }
 
   @override
@@ -79,11 +79,13 @@ class _EditPage extends State<EditPage> {
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
             return 'This field is required';
+          } else if (value.length < 6) {
+            return 'The length of id no shall be more than 6';
           }
         },
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Contact Number",
+            hintText: "ID Number",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
@@ -143,7 +145,7 @@ class _EditPage extends State<EditPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('FreeCode Spot'),
+        title: const Text('Flutter Forms'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(

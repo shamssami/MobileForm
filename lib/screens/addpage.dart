@@ -52,14 +52,50 @@ class _AddPage extends State<AddPage> {
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
             return 'This field is required';
+          } else if (value.length < 6) {
+            return 'The length of id no shall be more than 6';
           }
         },
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Contact Number",
+            hintText: "ID Number",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
+////////////////////////////////
+    final List<String> cities = ['Bethlehem', 'Jerusalem', 'Hebron'];
+    String? _currentCity = cities[0];
+
+    final cityField = DropdownButtonFormField(
+        value: _currentCity!.isNotEmpty ? _currentCity : null,
+        items: cities.map((sugar) {
+          return DropdownMenuItem(
+            value: sugar,
+            child: Text('$sugar cities'),
+          );
+        }).toList(),
+        onChanged: (val) => setState(() {
+              // print(val);
+              _currentCity = val;
+            }));
+
+    ////////////////////////////////
+    final List<String> areas = ['Tuqu', 'Halhoul', 'Janata'];
+    String? _currentArea = areas[0];
+
+    final areaField = DropdownButtonFormField(
+        value: _currentArea!.isNotEmpty ? _currentArea : null,
+        items: areas.map((sugar) {
+          return DropdownMenuItem(
+            value: sugar,
+            child: Text('$sugar cities'),
+          );
+        }).toList(),
+        onChanged: (val) => setState(() {
+              // print(val);
+              _currentArea = val;
+            }));
+////////////////////////////
     final viewListbutton = TextButton(
         onPressed: () {
           Navigator.pushAndRemoveUntil<dynamic>(
@@ -115,7 +151,7 @@ class _AddPage extends State<AddPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('FreeCode Spot'),
+        title: const Text('Flutter Form'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(
@@ -134,6 +170,11 @@ class _AddPage extends State<AddPage> {
                   positionField,
                   const SizedBox(height: 35.0),
                   contactField,
+                  const SizedBox(height: 35.0),
+                  cityField,
+                  const SizedBox(height: 35.0),
+                  areaField,
+                  const SizedBox(height: 35.0),
                   viewListbutton,
                   const SizedBox(height: 45.0),
                   SaveButon,

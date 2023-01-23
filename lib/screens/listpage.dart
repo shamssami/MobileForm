@@ -89,87 +89,274 @@ class _ListPage extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Form(
-          child: TextFormField(
-            controller: _searchController,
-            decoration:
-                const InputDecoration(labelText: 'ابحث عن اسم المستخدم'),
-            onFieldSubmitted: (String _) {
-              setState(() {
-                isShowUsers = true;
-              });
-              print(_);
-            },
+        appBar: AppBar(
+          title: Form(
+            child: TextFormField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                  labelText: 'Search',
+                  icon: Icon(Icons.search, color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.white)),
+              style: TextStyle(color: Colors.white),
+              onFieldSubmitted: (String _) {
+                setState(() {
+                  isShowUsers = true;
+                });
+                print(_);
+              },
+            ),
           ),
-        ),
-      ),
-      body: isShowUsers
-          ? FutureBuilder(
-              future: FirebaseFirestore.instance
-                  .collection('users')
-                  .where(
-                    'employee_name',
-                    isEqualTo: _searchController.text,
-                  )
-                  .get(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                return ListView.builder(
-                  itemCount: (snapshot.data! as dynamic).docs.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        print(
-                          (snapshot.data! as dynamic).docs[index]
-                              ['employee_name'],
-                        );
-                      },
-                      //  Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) =>
-                      //     ProfileScreen(
-                      //       uid: (snapshot.data as dynamic).docs[index]['uid'],
-                      //     ),
-                      //   ),
-                      // ),
-                      child: ListTile(
-                        // leading: CircleAvatar(
-                        //   backgroundImage: NetworkImage(
-                        //     (snapshot.data as dynamic).docs[index]['photoUrl'],
-                        //   ),
-                        //   radius: 16,
-                        // ),
-                        title: Text(
-                          (snapshot.data! as dynamic).docs[index]
-                              ['employee_name'],
-                        ),
-                      ),
-                    );
-                  },
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => AddPage(),
+                  ),
+                  (route) =>
+                      false, //if you want to disable back feature set to false
                 );
               },
             )
-          : FutureBuilder(
-              future: FirebaseFirestore.instance
-                  .collection('posts')
-                  .orderBy('datePublished')
-                  .get(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+          ],
+        ),
+        body: isShowUsers
+            ? FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .where(
+                      'employee_name',
+                      isEqualTo: _searchController.text,
+                    )
+                    .get(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: (snapshot.data! as dynamic).docs.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                          child: Column(children: [
+                        ListTile(
+                          title: Text(
+                            (snapshot.data! as dynamic).docs[index]
+                                ['employee_name'],
+                          ),
+                          subtitle: Container(
+                            child: (Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                    "Position: " +
+                                        (snapshot.data! as dynamic).docs[index]
+                                            ['position'],
+                                    style: const TextStyle(fontSize: 14)),
+                                Text(
+                                    "ID Number: " +
+                                        (snapshot.data! as dynamic).docs[index]
+                                            ['contact_no'],
+                                    style: const TextStyle(fontSize: 12)),
+                              ],
+                            )),
+                          ),
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(5.0),
+                                primary:
+                                    const Color.fromARGB(255, 143, 133, 226),
+                                textStyle: const TextStyle(fontSize: 20),
+                              ),
+                              child: const Text('Edit'),
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil<dynamic>(
+                                  context,
+                                  MaterialPageRoute<dynamic>(
+                                    builder: (BuildContext context) => EditPage(
+                                      employee: Employee(
+                                        uid: _resultsList[index].id,
+                                        employeename:
+                                            (snapshot.data! as dynamic)
+                                                .docs[index]['employee_name'],
+                                        position: (snapshot.data! as dynamic)
+                                            .docs[index]['position'],
+                                        id_no: (snapshot.data! as dynamic)
+                                            .docs[index]['contact_no'],
+                                      ),
+                                    ),
+                                  ),
+                                  (route) =>
+                                      false, //if you want to disable back feature set to false
+                                );
+                              },
+                            ),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(5.0),
+                                primary:
+                                    const Color.fromARGB(255, 143, 133, 226),
+                                textStyle: const TextStyle(fontSize: 20),
+                              ),
+                              child: const Text('Delete'),
+                              onPressed: () async {
+                                var response =
+                                    await FirebaseCrud.deleteEmployee(
+                                        docId: _resultsList[index].id);
+                                if (response.code != 200) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content:
+                                              Text(response.message.toString()),
+                                        );
+                                      });
+                                } else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content:
+                                              Text('Deleted Successfully!'),
+                                        );
+                                      });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ]));
+                    },
                   );
-                }
-
-                return Container();
-              },
-            ),
-    );
+                },
+              )
+            ///////////////////////////////////  ///////////////
+            : FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .where(
+                      'employee_name',
+                      isGreaterThanOrEqualTo: _searchController.text,
+                    )
+                    .get(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: (snapshot.data! as dynamic).docs.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                          child: Column(children: [
+                        ListTile(
+                          title: Text(
+                            (snapshot.data! as dynamic).docs[index]
+                                ['employee_name'],
+                          ),
+                          subtitle: Container(
+                            child: (Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                    "Position: " +
+                                        (snapshot.data! as dynamic).docs[index]
+                                            ['position'],
+                                    style: const TextStyle(fontSize: 14)),
+                                Text(
+                                    "ID Number: " +
+                                        (snapshot.data! as dynamic).docs[index]
+                                            ['contact_no'],
+                                    style: const TextStyle(fontSize: 12)),
+                              ],
+                            )),
+                          ),
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(5.0),
+                                primary:
+                                    const Color.fromARGB(255, 143, 133, 226),
+                                textStyle: const TextStyle(fontSize: 20),
+                              ),
+                              child: const Text('Edit'),
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil<dynamic>(
+                                  context,
+                                  MaterialPageRoute<dynamic>(
+                                    builder: (BuildContext context) => EditPage(
+                                      employee: Employee(
+                                        uid: _resultsList[index].id,
+                                        employeename:
+                                            (snapshot.data! as dynamic)
+                                                .docs[index]['employee_name'],
+                                        position: (snapshot.data! as dynamic)
+                                            .docs[index]['position'],
+                                        id_no: (snapshot.data! as dynamic)
+                                            .docs[index]['contact_no'],
+                                      ),
+                                    ),
+                                  ),
+                                  (route) =>
+                                      false, //if you want to disable back feature set to false
+                                );
+                              },
+                            ),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(5.0),
+                                primary:
+                                    const Color.fromARGB(255, 143, 133, 226),
+                                textStyle: const TextStyle(fontSize: 20),
+                              ),
+                              child: const Text('Delete'),
+                              onPressed: () async {
+                                var response =
+                                    await FirebaseCrud.deleteEmployee(
+                                        docId: _resultsList[index].id);
+                                if (response.code != 200) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content:
+                                              Text(response.message.toString()),
+                                        );
+                                      });
+                                } else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content:
+                                              Text('Deleted Successfully!'),
+                                        );
+                                      });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ]));
+                    },
+                  );
+                },
+              ));
     // return Scaffold(
     //     resizeToAvoidBottomInset: false,
     //     appBar: AppBar(
@@ -231,7 +418,7 @@ class _ListPage extends State<ListPage> {
     //                                       uid: _resultsList[index]["uid"],
     //                                       employeename: 'ssss',
     //                                       position: 'ssss',
-    //                                       contactno: 'ssss'),
+    //                                       id_no: 'ssss'),
     //                                 ),
     //                               ),
     //                               (route) =>
@@ -293,7 +480,7 @@ class _ListPage extends State<ListPage> {
     //           //                                 style: const TextStyle(fontSize: 14)),
     //           //                             Text(
     //           //                                 "Contact Number: " +
-    //           //                                         e['contact_no'] ??
+    //           //                                         e['id_no'] ??
     //           //                                     "Loading",
     //           //                                 style: const TextStyle(fontSize: 12)),
     //           //                           ],
@@ -322,7 +509,7 @@ class _ListPage extends State<ListPage> {
     //           //                                       employeename:
     //           //                                           e["employee_name"],
     //           //                                       position: e["position"],
-    //           //                                       contactno: e["contact_no"]),
+    //           //                                       id_no: e["id_no"]),
     //           //                                 ),
     //           //                               ),
     //           //                               (route) =>

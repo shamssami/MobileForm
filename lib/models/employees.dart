@@ -5,16 +5,16 @@ class Employee {
   String? uid;
   String? employeename;
   String? position;
-  String? contactno;
+  String? id_no;
 
-  Employee({this.uid, this.employeename, this.position, this.contactno});
+  Employee({this.uid, this.employeename, this.position, this.id_no});
 
   // formatting for upload to Firbase when creating the trip
   Map<String, dynamic> toJson() => {
         'uid': uid,
         'employeename': employeename,
         'position': position,
-        'contactno': contactno,
+        'id_no': id_no,
       };
 
   // creating a Trip object from a firebase snapshot
@@ -22,5 +22,5 @@ class Employee {
       : uid = snapshot['uid'],
         employeename = snapshot['employeename'],
         position = snapshot['position'],
-        contactno = snapshot['contactno'];
+        id_no = snapshot['id_no'];
 }
