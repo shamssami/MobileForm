@@ -15,6 +15,8 @@ class _AddPage extends State<AddPage> {
   final _employee_name = TextEditingController();
   final _employee_position = TextEditingController();
   final _employee_contact = TextEditingController();
+  final _employee_city = TextEditingController();
+  final _employee_area = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -120,7 +122,9 @@ class _AddPage extends State<AddPage> {
             var response = await FirebaseCrud.addEmployee(
                 name: _employee_name.text,
                 position: _employee_position.text,
-                contactno: _employee_contact.text);
+                contactno: _employee_contact.text,
+                city: _employee_city.text,
+                area: _employee_area.text);
             if (response.code != 200) {
               showDialog(
                   context: context,

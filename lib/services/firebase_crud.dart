@@ -13,6 +13,8 @@ class FirebaseCrud {
     required String name,
     required String position,
     required String contactno,
+    required String city,
+    required String area,
   }) async {
     Response response = Response();
     DocumentReference documentReferencer = _Collection.doc();
@@ -20,7 +22,9 @@ class FirebaseCrud {
     Map<String, dynamic> data = <String, dynamic>{
       "employee_name": name,
       "position": position,
-      "contact_no": contactno
+      "contact_no": contactno,
+      "city": city,
+      "area": area
     };
 
     var result = await documentReferencer.set(data).whenComplete(() {
@@ -49,6 +53,8 @@ class FirebaseCrud {
     required String name,
     required String position,
     required String contactno,
+    required String city,
+    required String area,
     required String docId,
   }) async {
     Response response = Response();
@@ -57,7 +63,9 @@ class FirebaseCrud {
     Map<String, dynamic> data = <String, dynamic>{
       "employee_name": name,
       "position": position,
-      "contact_no": contactno
+      "contact_no": contactno,
+      "city": city,
+      "area": area
     };
 
     await documentReferencer.update(data).whenComplete(() {
