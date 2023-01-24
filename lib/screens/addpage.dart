@@ -79,8 +79,26 @@ class _AddPage extends State<AddPage> {
         onChanged: (val) => setState(() {
               // print(val);
               _currentCity = val;
+              _employee_city.text = _currentCity!;
+              print('-@@@@@@@@@@@@@@@@@@@@@--------------------------');
+              print(_currentCity);
             }));
 
+    // String dropdownValue = 'One';
+    // final cityField = DropdownButtonFormField<String>(
+    //   value: dropdownValue,
+    //   onChanged: (newValue) {
+    //     setState(() {
+    //       dropdownValue = newValue ?? 'kkk';
+    //     });
+    //   },
+    //   items: cities.map<DropdownMenuItem<String>>((String value) {
+    //     return DropdownMenuItem<String>(
+    //       value: value,
+    //       child: Text(value),
+    //     );
+    //   }).toList(),
+    // );
     ////////////////////////////////
     final List<String> areas = ['Tuqu', 'Halhoul', 'Janata'];
     String? _currentArea = areas[0];
@@ -96,6 +114,10 @@ class _AddPage extends State<AddPage> {
         onChanged: (val) => setState(() {
               // print(val);
               _currentArea = val;
+              _employee_area.text = _currentArea!;
+
+              print('-@@@@@@@@@@@@@@@@@@@@@--------------------------');
+              print(_currentArea);
             }));
 ////////////////////////////
     final viewListbutton = TextButton(
@@ -109,7 +131,7 @@ class _AddPage extends State<AddPage> {
           );
         },
         child: const Text('View List of Employee'));
-
+    print('+++++++++++++++==');
     final SaveButon = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
