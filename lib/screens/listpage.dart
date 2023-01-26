@@ -18,7 +18,6 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPage extends State<ListPage> {
-  final Stream<QuerySnapshot> collectionReference = FirebaseCrud.readEmployee();
   //FirebaseFirestore.instance.collection('Employee').snapshots();
   TextEditingController _searchController = TextEditingController();
   Icon customIcon = const Icon(Icons.search);
@@ -59,14 +58,17 @@ class _ListPage extends State<ListPage> {
         String title = _allResults[i]["employee_name"].toLowerCase();
         String position = _allResults[i]["position"].toLowerCase();
         String id = _allResults[i]["contact_no"];
+        String city = _allResults[i]["city"].toLowerCase();
+        String area = _allResults[i]["area"].toLowerCase();
 
         print(title);
         print(title.contains(_searchController.text.toLowerCase()));
 
         if (title.contains(_searchController.text.toLowerCase()) ||
             position.contains(_searchController.text.toLowerCase()) ||
-            id.contains(_searchController.text.toLowerCase())) {
-          // showResults.add(_allResults[i]["employee_name"].toLowerCase());
+            id.contains(_searchController.text.toLowerCase()) ||
+            city.contains(_searchController.text.toLowerCase()) ||
+            area.contains(_searchController.text.toLowerCase())) {
           showResults.add(_allResults[i]);
 
           print(showResults[0]);
@@ -141,21 +143,44 @@ class _ListPage extends State<ListPage> {
           ],
         ),
         body: ListView.builder(
+          padding: EdgeInsets.only(top: 10),
           itemCount: _resultsList.length,
           itemBuilder: (context, index) {
             return Expanded(
                 child: Card(
                     child: Column(children: [
               ListTile(
-                title: Text(_resultsList[index]["employee_name"]),
+                leading:
+                    //  Row(children: [
+                    Text(
+                  _resultsList[index]["employee_name"],
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+                ),
+                trailing: Text(
+                  _resultsList[index]["position"],
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+                ),
                 subtitle: Container(
+                  padding: EdgeInsets.only(top: 20),
                   child: (Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(_resultsList[index]["position"],
-                          style: const TextStyle(fontSize: 14)),
-                      Text(_resultsList[index]["contact_no"],
-                          style: const TextStyle(fontSize: 12)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                          'ID:             ${_resultsList[index]["contact_no"]}',
+                          style: const TextStyle(fontSize: 15)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text('City:          ${_resultsList[index]["city"]}',
+                          style: const TextStyle(fontSize: 15)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text('Region:     ${_resultsList[index]["area"]}',
+                          style: const TextStyle(fontSize: 15)),
                     ],
                   )),
                 ),

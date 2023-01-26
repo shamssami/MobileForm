@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form/screens/listpage.dart';
 
@@ -12,6 +13,150 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPage extends State<AddPage> {
+//***************************************************************************************
+//***************************************************************************************
+
+  List _allCities = [];
+  List areasList = [];
+  List beth = [];
+  List hebron = [];
+  List jerusalem = [];
+  List nablus = [];
+  List gaza = [];
+
+  List<DropdownMenuItem> cityItems = [];
+  List<DropdownMenuItem> areasItems = [];
+  List<DropdownMenuItem> bethItems = [];
+  List<DropdownMenuItem> hebronItems = [];
+  List<DropdownMenuItem> jerusalemItems = [];
+  List<DropdownMenuItem> nablusItems = [];
+  List<DropdownMenuItem> gazaItems = [];
+  var selectedCurrency = null, selectedType, selectedTown;
+
+  getdata() async {
+    var ref = await FirebaseFirestore.instance.collection('cities').get();
+    setState(() {
+      _allCities = ref.docs;
+      // selectedCurrency = _allCities[0].id;
+      // selectedTown = _allCities[0]['areas'][0];
+
+      for (int e = 0; e < _allCities.length; e++) {
+        areasList.add(_allCities[e]['areas']);
+        print(areasList[e]);
+        print('---inside setstate--------------------------------------------');
+        cityItems.add(
+          DropdownMenuItem(
+            value: "${_allCities[e].id}",
+            child: Text(
+              _allCities[e].id,
+              style: const TextStyle(color: Color(0xff11b719)),
+            ),
+          ),
+        );
+        print(
+            '***************areasList[e][e]***********************************');
+      }
+
+      for (int i = 0; i < _allCities.length; i++) {
+        if (_allCities[i].id == "Bethlehem") {
+          beth = areasList[i];
+
+          for (int j = 0; j < beth.length; j++) {
+            bethItems.add(
+              DropdownMenuItem(
+                value: "${beth[j]}",
+                child: Text(
+                  beth[j],
+                  style: const TextStyle(color: Color(0xff11b719)),
+                ),
+              ),
+            );
+          }
+          print(beth.toString());
+          print('--------------------test1--------------');
+        } else if (_allCities[i].id == "Gaza") {
+          gaza = areasList[i];
+
+          for (int j = 0; j < gaza.length; j++) {
+            gazaItems.add(
+              DropdownMenuItem(
+                value: "${gaza[j]}",
+                child: Text(
+                  gaza[j],
+                  style: const TextStyle(color: Color(0xff11b719)),
+                ),
+              ),
+            );
+          }
+        } else if (_allCities[i].id == "Hebron") {
+          hebron = areasList[i];
+
+          for (int j = 0; j < hebron.length; j++) {
+            hebronItems.add(
+              DropdownMenuItem(
+                value: "${hebron[j]}",
+                child: Text(
+                  hebron[j],
+                  style: const TextStyle(color: Color(0xff11b719)),
+                ),
+              ),
+            );
+          }
+        } else if (_allCities[i].id == "Jerusalem") {
+          jerusalem = areasList[i];
+
+          for (int j = 0; j < jerusalem.length; j++) {
+            jerusalemItems.add(
+              DropdownMenuItem(
+                value: "${jerusalem[j]}",
+                child: Text(
+                  jerusalem[j],
+                  style: const TextStyle(color: Color(0xff11b719)),
+                ),
+              ),
+            );
+          }
+        } else if (_allCities[i].id == "Nablus") {
+          nablus = areasList[i];
+
+          for (int j = 0; j < nablus.length; j++) {
+            nablusItems.add(
+              DropdownMenuItem(
+                value: "${nablus[j]}",
+                child: Text(
+                  nablus[j],
+                  style: const TextStyle(color: Color(0xff11b719)),
+                ),
+              ),
+            );
+          }
+        }
+      }
+    });
+    print(
+        '^^^^^^^^^^^^^^^^^^^^^^^^--##################---------------------------------');
+
+    return "complete";
+  }
+
+//////////////////////////////////////////
+  @override
+  void initState() {
+    super.initState();
+    getdata();
+
+    // CountryDependentDropDown();
+  }
+
+  ////////////////////////////////////////////////////////
+
+  final GlobalKey<FormState> _formKeyValue = new GlobalKey<FormState>();
+
+  List<DropdownMenuItem> temp = [];
+
+  //***************************************************************************************
+// *******************************************************************************
+//***************************************************************************************
   final _employee_name = TextEditingController();
   final _employee_position = TextEditingController();
   final _employee_contact = TextEditingController();
@@ -69,56 +214,77 @@ class _AddPage extends State<AddPage> {
     String? _currentCity = cities[0];
 
     final cityField = DropdownButtonFormField(
-        value: _currentCity!.isNotEmpty ? _currentCity : null,
-        items: cities.map((sugar) {
-          return DropdownMenuItem(
-            value: sugar,
-            child: Text('$sugar cities'),
-          );
-        }).toList(),
-        onChanged: (val) => setState(() {
-              // print(val);
-              _currentCity = val;
-              _employee_city.text = _currentCity!;
-              print('-@@@@@@@@@@@@@@@@@@@@@--------------------------');
-              print(_currentCity);
-            }));
-
-    // String dropdownValue = 'One';
-    // final cityField = DropdownButtonFormField<String>(
-    //   value: dropdownValue,
-    //   onChanged: (newValue) {
-    //     setState(() {
-    //       dropdownValue = newValue ?? 'kkk';
-    //     });
-    //   },
-    //   items: cities.map<DropdownMenuItem<String>>((String value) {
-    //     return DropdownMenuItem<String>(
-    //       value: value,
-    //       child: Text(value),
-    //     );
-    //   }).toList(),
-    // );
-    ////////////////////////////////
-    final List<String> areas = ['Tuqu', 'Halhoul', 'Janata'];
-    String? _currentArea = areas[0];
+      items: cityItems,
+      onChanged: (Value) {
+        temp = [];
+        final snackBar = SnackBar(
+          backgroundColor: Color.fromARGB(255, 199, 180, 248),
+          content: Text(
+            'Selected City value is $Value',
+            style: TextStyle(color: Color.fromARGB(255, 6, 6, 6)),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        setState(() {
+          //
+          selectedCurrency = Value;
+          _employee_city.text = selectedCurrency;
+          if (selectedCurrency == "Bethlehem") {
+            temp = bethItems;
+            // selectedTown = temp[0];
+          } else if (selectedCurrency == "Gaza") {
+            temp = gazaItems;
+            // selectedTown = temp[0];
+          } else if (selectedCurrency == "Hebron") {
+            temp = hebronItems;
+            // selectedTown = temp[0];
+          } else if (selectedCurrency == "Jerusalem") {
+            temp = jerusalemItems;
+            // selectedTown = temp[0];
+          } else if (selectedCurrency == "Nablus") {
+            temp = nablusItems;
+            // selectedTown = temp[0];
+          } else {
+            temp = [];
+          }
+        });
+      },
+      value: selectedCurrency,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'This field is required';
+        }
+      },
+      isExpanded: false,
+      hint: const Text(
+        "Select City",
+      ),
+    );
 
     final areaField = DropdownButtonFormField(
-        value: _currentArea!.isNotEmpty ? _currentArea : null,
-        items: areas.map((sugar) {
-          return DropdownMenuItem(
-            value: sugar,
-            child: Text('$sugar cities'),
-          );
-        }).toList(),
-        onChanged: (val) => setState(() {
-              // print(val);
-              _currentArea = val;
-              _employee_area.text = _currentArea!;
-
-              print('-@@@@@@@@@@@@@@@@@@@@@--------------------------');
-              print(_currentArea);
-            }));
+      items: temp,
+      dropdownColor: Color.fromARGB(221, 69, 68, 69),
+      style: TextStyle(color: Color.fromARGB(255, 219, 216, 224)),
+      onChanged: (townsValue) {
+        final snackBar = SnackBar(
+          backgroundColor: Color.fromARGB(255, 199, 180, 248),
+          content: Text(
+            'Selected Area value is $townsValue',
+            style: TextStyle(color: Color.fromARGB(255, 8, 8, 8)),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        setState(() {
+          selectedTown = townsValue;
+          _employee_area.text = selectedTown;
+        });
+      },
+      value: selectedTown,
+      isExpanded: true,
+      hint: const Text(
+        "Choose Area Type",
+      ),
+    );
 ////////////////////////////
     final viewListbutton = TextButton(
         onPressed: () {
