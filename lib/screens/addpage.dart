@@ -216,7 +216,6 @@ class _AddPage extends State<AddPage> {
     final cityField = DropdownButtonFormField(
       items: cityItems,
       onChanged: (Value) {
-        temp = [];
         final snackBar = SnackBar(
           backgroundColor: Color.fromARGB(255, 199, 180, 248),
           content: Text(
@@ -225,6 +224,7 @@ class _AddPage extends State<AddPage> {
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        selectedTown = null;
         setState(() {
           //
           selectedCurrency = Value;
